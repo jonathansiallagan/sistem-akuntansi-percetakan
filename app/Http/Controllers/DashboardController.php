@@ -8,11 +8,11 @@ class DashboardController extends Controller
 {
     public function admin()
     {
-        return view('admin');
+        return view('admin.admin');
     }
 
     public function kasir()
     {
-        return view('kasir');
+        return view('kasir.kasir');
     }
 }

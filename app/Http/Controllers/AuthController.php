@@ -30,8 +30,8 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            // Nanti ini akan kita arahkan ke halaman Admin atau Kasir
-            return redirect()->intended('/')->with('success', 'Berhasil login!');
+            // Mengarahkan ke halaman Admin atau Kasir
+            return redirect()->intended('/admin')->with('success', 'Berhasil login!');
         }
 
         // Jika email/password salah, kembalikan ke halaman login dengan pesan error
@@ -44,7 +44,7 @@ class AuthController extends Controller
     
     public function register()
     {
-        return view('auth.register'); // Atau 'register' jika filemu ada di luar folder auth
+        return view('auth.register');
     }
 
     public function store(Request $request)
@@ -61,7 +61,6 @@ class AuthController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        Auth::login($user);
-        return redirect('/')->with('success', 'Registrasi berhasil!');
+        return redirect('/admin')->with('success', 'Akun pengguna baru berhasil ditambahkan!');
     }
 }
