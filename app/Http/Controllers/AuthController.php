@@ -40,7 +40,7 @@ class AuthController extends Controller
         ])->onlyInput('email');
     }
 
-    // === FITUR REGISTER (Yang sebelumnya dibuat) ===
+    // === FITUR REGISTER ===
     
     public function register()
     {
@@ -62,5 +62,22 @@ class AuthController extends Controller
         ]);
 
         return redirect('/admin')->with('success', 'Akun pengguna baru berhasil ditambahkan!');
+    }
+
+    // === FITUR LOGOUT ===
+
+    public function logout(Request $request)
+    {
+        // 1. Keluarkan pengguna dari sistem
+        Auth::logout();
+
+        // 2. Hapus sesi yang aktif saat ini untuk keamanan
+        $request->session()->invalidate();
+
+        // 3. Buat ulang token keamanan (CSRF) yang baru
+        $request->session()->regenerateToken();
+
+        // 4. Kembalikan ke halaman login
+        return redirect('/login')->with('success', 'Anda berhasil keluar.');
     }
 }
