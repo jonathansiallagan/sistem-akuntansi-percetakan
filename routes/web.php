@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -15,3 +16,9 @@ Route::post('/login', [AuthController::class, 'authenticate'])->name('login.auth
 // Route untuk Register (yang sudah kamu buat sebelumnya)
 Route::get('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/register', [AuthController::class, 'store'])->name('register.store');
+
+// Halaman Dashboard Utama
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin', [DashboardController::class, 'admin'])->name('admin');
+    Route::get('/kasir', [DashboardController::class, 'kasir'])->name('kasir');
+});
