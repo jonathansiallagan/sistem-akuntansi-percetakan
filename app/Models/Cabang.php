@@ -9,7 +9,6 @@ class Cabang extends Model
 {
     use HasFactory;
 
-    // Mendaftarkan kolom apa saja yang boleh diisi secara langsung
     protected $fillable = [
         'nama',
         'alamat',

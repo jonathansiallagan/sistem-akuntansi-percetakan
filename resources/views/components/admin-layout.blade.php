@@ -61,7 +61,7 @@
             <!-- KELOMPOK 2: MASTER DATA -->
             <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3 px-3">Master Data</div>
             <nav class="flex flex-col gap-1">
-                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition">
+                <a href="{{ route('cabang.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition">
                     <i class="fa-solid fa-store w-5 text-center"></i> Cabang
                 </a>
                 
@@ -88,8 +88,8 @@
     </div>
 
     <!-- KOTAK 4: Main Content -->
-    <div class="overflow-y-auto p-8">
-        @yield('content')
+    <div class="overflow-y-auto p-8 w-full">
+        {{ $slot }}
     </div>
 
 </body>
