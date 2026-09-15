@@ -31,28 +31,48 @@
     </div>
 
     <!-- KOTAK 3: Control Panel / Sidebar -->
-    <div class="bg-white border-r border-gray-200 flex flex-col p-4 z-10">
-        <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3 px-3">Menu Utama</div>
+    <div class="bg-white border-r border-gray-200 flex flex-col p-4 z-10 overflow-y-auto">
         
-        <nav class="flex flex-col gap-1">
-            <!-- Menu Aktif (Contoh Dasbor) -->
+        <!-- KELOMPOK 1: MENU UTAMA -->
+        <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3 px-3">Menu Utama</div>
+        <nav class="flex flex-col gap-1 mb-8">
             <a href="{{ route('admin') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-blue-50 text-blue-700 font-medium transition">
-                <i class="fa-solid fa-chart-pie w-5 text-center"></i> Dasbor
-            </a>
-            
-            <!-- Menu Pasif -->
-            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition">
-                <i class="fa-solid fa-box w-5 text-center"></i> Data Produk
+                <i class="fa-solid fa-chart-pie w-5 text-center"></i> Dashboard
             </a>
             
             <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition">
-                <i class="fa-solid fa-file-invoice-dollar w-5 text-center"></i> Pesanan
+                <i class="fa-solid fa-cash-register w-5 text-center"></i> Transaksi
             </a>
             
             <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition">
-                <i class="fa-solid fa-users w-5 text-center"></i> Karyawan
+                <i class="fa-solid fa-box w-5 text-center"></i> Produk
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition">
+                <i class="fa-solid fa-book w-5 text-center"></i> Jurnal Umum
+            </a>
+
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition">
+                <i class="fa-solid fa-book-open w-5 text-center"></i> Buku Besar
             </a>
         </nav>
+
+        <!-- KELOMPOK 2: MASTER DATA -->
+        <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3 px-3">Master Data</div>
+        <nav class="flex flex-col gap-1">
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition">
+                <i class="fa-solid fa-store w-5 text-center"></i> Cabang
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition">
+                <i class="fa-solid fa-users w-5 text-center"></i> User
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition">
+                <i class="fa-solid fa-list-ul w-5 text-center"></i> Akun
+            </a>
+        </nav>
+
     </div>
 
     <!-- KOTAK 4: Main Content -->
