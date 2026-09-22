@@ -5,8 +5,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AkunController;
 
-Route::redirect('/', '/login');
+Route::redirect('/', '/admin');
 
 // AREA PUBLIK //
 // Route untuk Login
@@ -38,6 +39,14 @@ Route::middleware(['auth'])->group(function (){
     Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
     Route::put('/user/{id}', [UserController::class, 'update'])->name('user.update');
     Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+
+    // === ROUTE MASTER DATA AKUN ===
+    Route::get('/akun', [AkunController::class, 'index'])->name('akun.index');
+    Route::get('/akun/tambah', [AkunController::class, 'create'])->name('akun.create');
+    Route::post('/akun', [AkunController::class, 'store'])->name('akun.store');
+    Route::get('/akun/{id}/edit', [AkunController::class, 'edit'])->name('akun.edit');
+    Route::put('/akun/{id}', [AkunController::class, 'update'])->name('akun.update');
+    Route::delete('/akun/{id}', [AkunController::class, 'destroy'])->name('akun.destroy');
 
     // Halaman Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

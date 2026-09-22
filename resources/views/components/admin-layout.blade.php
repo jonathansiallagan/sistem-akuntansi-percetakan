@@ -69,7 +69,7 @@
                     <i class="fa-solid fa-users w-5 text-center"></i> User
                 </a>
                 
-                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition">
+                <a href="{{ route('akun.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition">
                     <i class="fa-solid fa-list-ul w-5 text-center"></i> Akun
                 </a>
             </nav>
