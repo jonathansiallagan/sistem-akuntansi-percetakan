@@ -11,30 +11,24 @@ class AuthController extends Controller
 {
     // === FITUR LOGIN ===
 
-    // 1. Menampilkan halaman form login
     public function login()
     {
         return view('auth.login'); 
     }
 
-    // 2. Memproses data login
     public function authenticate(Request $request)
     {
-        // Validasi input
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        // Coba mencocokkan email dan password ke database
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            // Mengarahkan ke halaman Admin atau Kasir
             return redirect()->intended('/admin')->with('success', 'Berhasil login!');
         }
 
-        // Jika email/password salah, kembalikan ke halaman login dengan pesan error
         return back()->withErrors([
             'email' => 'Email atau password salah.',
         ])->onlyInput('email');
