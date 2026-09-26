@@ -37,23 +37,33 @@
             <!-- KELOMPOK 1: MENU UTAMA -->
             <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3 px-3">Menu Utama</div>
             <nav class="flex flex-col gap-1 mb-8">
-                <a href="{{ route('admin') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-blue-50 text-blue-700 font-medium transition">
+                <a href="{{ route('admin') }}"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition
+                {{ request()->routeIs('admin') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                     <i class="fa-solid fa-chart-pie w-5 text-center"></i> Dashboard
                 </a>
-                
-                <a href="{{ route('transaksi.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition">
+
+                <a href="{{ route('transaksi.index') }}"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition
+                {{ request()->routeIs('transaksi.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                     <i class="fa-solid fa-cash-register w-5 text-center"></i> Transaksi
                 </a>
-                
-                <a href="{{ route('produk.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition">
+
+                <a href="{{ route('produk.index') }}"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition
+                {{ request()->routeIs('produk.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                     <i class="fa-solid fa-box w-5 text-center"></i> Produk
                 </a>
-                
-                <a href="{{ route('jurnal.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition">
+
+                <a href="{{ route('jurnal.index') }}"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition
+                {{ request()->routeIs('jurnal.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                     <i class="fa-solid fa-book w-5 text-center"></i> Jurnal Umum
                 </a>
 
-                <a href="{{ route('buku_besar.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition">
+                <a href="{{ route('buku_besar.index') }}"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition
+                {{ request()->routeIs('buku_besar.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                     <i class="fa-solid fa-book-open w-5 text-center"></i> Buku Besar
                 </a>
             </nav>
@@ -61,15 +71,21 @@
             <!-- KELOMPOK 2: MASTER DATA -->
             <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3 px-3">Master Data</div>
             <nav class="flex flex-col gap-1">
-                <a href="{{ route('cabang.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition">
+                <a href="{{ route('cabang.index') }}"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition
+                {{ request()->routeIs('cabang.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                     <i class="fa-solid fa-store w-5 text-center"></i> Cabang
                 </a>
-                
-                <a href="{{ route('user.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition">
+
+                <a href="{{ route('user.index') }}"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition
+                {{ request()->routeIs('user.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                     <i class="fa-solid fa-users w-5 text-center"></i> User
                 </a>
-                
-                <a href="{{ route('akun.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition">
+
+                <a href="{{ route('akun.index') }}"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition
+                {{ request()->routeIs('akun.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                     <i class="fa-solid fa-list-ul w-5 text-center"></i> Akun
                 </a>
             </nav>
