@@ -19,19 +19,19 @@ class AuthController extends Controller
     public function authenticate(Request $request)
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+            'username' => 'required|string',
+            'password' => 'required'
         ]);
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-
-            return redirect()->intended('/admin')->with('success', 'Berhasil login!');
+            
+            return redirect()->intended('/admin'); 
         }
 
         return back()->withErrors([
-            'email' => 'Email atau password salah.',
-        ])->onlyInput('email');
+            'username' => 'Username atau password yang dimasukkan salah.',
+        ])->onlyInput('username');
     }
 
     // === FITUR REGISTER ===
