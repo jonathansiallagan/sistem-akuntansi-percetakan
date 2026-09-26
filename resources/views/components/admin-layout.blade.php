@@ -69,26 +69,28 @@
             </nav>
 
             <!-- KELOMPOK 2: MASTER DATA -->
-            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3 px-3">Master Data</div>
-            <nav class="flex flex-col gap-1">
-                <a href="{{ route('cabang.index') }}"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition
-                {{ request()->routeIs('cabang.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
-                    <i class="fa-solid fa-store w-5 text-center"></i> Cabang
-                </a>
+            @if (Auth::user()->role === 'Admin Pusat')
+                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3 px-3">Master Data</div>
+                <nav class="flex flex-col gap-1">
+                    <a href="{{ route('cabang.index') }}"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition
+                    {{ request()->routeIs('cabang.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
+                        <i class="fa-solid fa-store w-5 text-center"></i> Cabang
+                    </a>
 
-                <a href="{{ route('user.index') }}"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition
-                {{ request()->routeIs('user.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
-                    <i class="fa-solid fa-users w-5 text-center"></i> User
-                </a>
+                    <a href="{{ route('user.index') }}"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition
+                    {{ request()->routeIs('user.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
+                        <i class="fa-solid fa-users w-5 text-center"></i> User
+                    </a>
 
-                <a href="{{ route('akun.index') }}"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition
-                {{ request()->routeIs('akun.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
-                    <i class="fa-solid fa-list-ul w-5 text-center"></i> Akun
-                </a>
-            </nav>
+                    <a href="{{ route('akun.index') }}"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition
+                    {{ request()->routeIs('akun.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
+                        <i class="fa-solid fa-list-ul w-5 text-center"></i> Akun
+                    </a>
+                </nav>
+            @endif
         </div>
 
         <!-- BAGIAN BAWAH: Tombol Keluar (Logout) -->

@@ -24,12 +24,23 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // 2. Buat Data User Dummy
+        // A. Admin Pusat
         User::create([
             'name' => 'Administrator',
             'email' => 'admin@contoh.com',
             'username' => 'admin',
             'password' => Hash::make('password'),
             'role' => 'Admin Pusat',
+            'cabang_id' => $cabang->id,
+        ]);
+
+        // B. Admin Cabang
+        User::create([
+            'name' => 'Admin Cabang',
+            'email' => 'admin.cabang@contoh.php',
+            'username' => 'admin_cabang',
+            'password' => Hash::make('password'),
+            'role' => 'Admin Cabang',
             'cabang_id' => $cabang->id,
         ]);
 

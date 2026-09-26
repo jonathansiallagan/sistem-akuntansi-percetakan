@@ -20,38 +20,23 @@ Route::middleware(['guest'])->group(function () {
     Route::post('/login', [AuthController::class, 'authenticate'])->name('login.authenticate');
 });
 
+//====================================================================================================//
 // AREA INTERNAL //
 Route::middleware(['auth'])->group(function (){
+
+    // Halaman Dashboard Utama
+    Route::get('/admin', [DashboardController::class, 'admin'])->name('admin');
+    Route::get('/kasir', [DashboardController::class, 'kasir'])->name('kasir');
+    
+    // Halaman Logout
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // Route untuk Register
     Route::get('/register', [AuthController::class, 'register'])->name('register');
     Route::post('/register', [AuthController::class, 'store'])->name('register.store');
 
-    // Halaman Dashboard Utama
-    Route::get('/admin', [DashboardController::class, 'admin'])->name('admin');
-    Route::get('/kasir', [DashboardController::class, 'kasir'])->name('kasir');
-
-    // === ROUTE MASTER DATA CABANG ===
-    Route::get('/cabang', [CabangController::class, 'index'])->name('cabang.index');
-    Route::get('/cabang/tambah', [CabangController::class, 'create'])->name('cabang.create');
-    Route::post('/cabang', [CabangController::class, 'store'])->name('cabang.store');
-
-    // === ROUTE MASTER DATA USER ===
-    Route::get('/user', [UserController::class, 'index'])->name('user.index');
-    Route::get('/user/tambah', [UserController::class, 'create'])->name('user.create');
-    Route::post('/user', [UserController::class, 'store'])->name('user.store');
-    Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
-    Route::put('/user/{id}', [UserController::class, 'update'])->name('user.update');
-    Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
-
-    // === ROUTE MASTER DATA AKUN ===
-    Route::get('/akun', [AkunController::class, 'index'])->name('akun.index');
-    Route::get('/akun/tambah', [AkunController::class, 'create'])->name('akun.create');
-    Route::post('/akun', [AkunController::class, 'store'])->name('akun.store');
-    Route::get('/akun/{id}/edit', [AkunController::class, 'edit'])->name('akun.edit');
-    Route::put('/akun/{id}', [AkunController::class, 'update'])->name('akun.update');
-    Route::delete('/akun/{id}', [AkunController::class, 'destroy'])->name('akun.destroy');
-
+//====================================================================================================//
+    // === ROUTE yang bisa diakses ADMIN PUSAT & ADMIN CABANG ===
     // === ROUTE TRANSAKSI ===
     Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
     Route::get('/transaksi/tambah', [TransaksiController::class, 'create'])->name('transaksi.create');
@@ -73,6 +58,28 @@ Route::middleware(['auth'])->group(function (){
     // === ROUTE BUKU BESAR ===
     Route::get('/buku-besar', [BukuBesarController::class, 'index'])->name('buku_besar.index');
 
-    // Halaman Logout
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+//====================================================================================================//
+    // === ROUTE yang hanya bisa diakses ADMIN PUSAT ===
+    Route::middleware(['role:Admin Pusat'])->group(function () {
+        // === ROUTE MASTER DATA CABANG ===
+        Route::get('/cabang', [CabangController::class, 'index'])->name('cabang.index');
+        Route::get('/cabang/tambah', [CabangController::class, 'create'])->name('cabang.create');
+        Route::post('/cabang', [CabangController::class, 'store'])->name('cabang.store');
+
+        // === ROUTE MASTER DATA USER ===
+        Route::get('/user', [UserController::class, 'index'])->name('user.index');
+        Route::get('/user/tambah', [UserController::class, 'create'])->name('user.create');
+        Route::post('/user', [UserController::class, 'store'])->name('user.store');
+        Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
+        Route::put('/user/{id}', [UserController::class, 'update'])->name('user.update');
+        Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+
+        // === ROUTE MASTER DATA AKUN ===
+        Route::get('/akun', [AkunController::class, 'index'])->name('akun.index');
+        Route::get('/akun/tambah', [AkunController::class, 'create'])->name('akun.create');
+        Route::post('/akun', [AkunController::class, 'store'])->name('akun.store');
+        Route::get('/akun/{id}/edit', [AkunController::class, 'edit'])->name('akun.edit');
+        Route::put('/akun/{id}', [AkunController::class, 'update'])->name('akun.update');
+        Route::delete('/akun/{id}', [AkunController::class, 'destroy'])->name('akun.destroy');
+    });
 });
