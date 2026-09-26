@@ -49,7 +49,7 @@
                     <i class="fa-solid fa-box w-5 text-center"></i> Produk
                 </a>
                 
-                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition">
+                <a href="{{ route('jurnal.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition">
                     <i class="fa-solid fa-book w-5 text-center"></i> Jurnal Umum
                 </a>
 

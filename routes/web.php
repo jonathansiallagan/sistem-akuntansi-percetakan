@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AkunController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\JurnalController;
 
 Route::redirect('/', '/admin');
 
@@ -62,6 +63,11 @@ Route::middleware(['auth'])->group(function (){
     Route::get('/produk/{id}/edit', [ProdukController::class, 'edit'])->name('produk.edit');
     Route::put('/produk/{id}', [ProdukController::class, 'update'])->name('produk.update');
     Route::delete('/produk/{id}', [ProdukController::class, 'destroy'])->name('produk.destroy');
+
+    // === ROUTE JURNAL UMUM ===
+    Route::get('/jurnal', [JurnalController::class, 'index'])->name('jurnal.index');
+    Route::get('/jurnal/tambah', [JurnalController::class, 'create'])->name('jurnal.create');
+    Route::post('/jurnal', [JurnalController::class, 'store'])->name('jurnal.store');
 
     // Halaman Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
