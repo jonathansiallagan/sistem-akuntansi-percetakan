@@ -3,23 +3,49 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Cabang;
+use App\Models\Produk;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
      * Seed the application's database.
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // 1. Buat Data Cabang Dummy
+        $cabang = Cabang::create([
+            'nama' => 'Cabang Utama',
+            'alamat' => 'Jl. Sudirman No. 123',
+            'no_hp' => '081234567890',
+            'status' => 'aktif',
+        ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // 2. Buat Data User Dummy
+        User::create([
+            'name' => 'Administrator',
+            'email' => 'admin@contoh.com',
+            'username' => 'admin',
+            'password' => Hash::make('password'),
+            'role' => 'Admin Pusat',
+            'cabang_id' => $cabang->id,
+        ]);
+
+        // 3. Buat Data Produk Dummy
+        Produk::create([
+            'nama_produk' => 'Spanduk Banner (Meteran)',
+            'satuan' => 'm2',
+            'harga_jual' => 25000,
+            'hpp' => 15000,
+        ]);
+        
+        Produk::create([
+            'nama_produk' => 'Brosur A4',
+            'satuan' => 'lembar',
+            'harga_jual' => 1500,
+            'hpp' => 1000,
         ]);
     }
 }

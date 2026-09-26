@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AkunController;
+use App\Http\Controllers\TransaksiController;
 
 Route::redirect('/', '/admin');
 
@@ -47,6 +48,11 @@ Route::middleware(['auth'])->group(function (){
     Route::get('/akun/{id}/edit', [AkunController::class, 'edit'])->name('akun.edit');
     Route::put('/akun/{id}', [AkunController::class, 'update'])->name('akun.update');
     Route::delete('/akun/{id}', [AkunController::class, 'destroy'])->name('akun.destroy');
+
+    // === ROUTE TRANSAKSI ===
+    Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
+    Route::get('/transaksi/tambah', [TransaksiController::class, 'create'])->name('transaksi.create');
+    Route::post('/transaksi', [TransaksiController::class, 'store'])->name('transaksi.store');
 
     // Halaman Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
