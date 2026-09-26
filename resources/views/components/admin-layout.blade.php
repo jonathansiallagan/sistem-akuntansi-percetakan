@@ -53,7 +53,7 @@
                     <i class="fa-solid fa-book w-5 text-center"></i> Jurnal Umum
                 </a>
 
-                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition">
+                <a href="{{ route('buku_besar.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition">
                     <i class="fa-solid fa-book-open w-5 text-center"></i> Buku Besar
                 </a>
             </nav>

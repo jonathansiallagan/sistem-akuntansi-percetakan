@@ -9,6 +9,7 @@ use App\Http\Controllers\AkunController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\JurnalController;
+use App\Http\Controllers\BukuBesarController;
 
 Route::redirect('/', '/admin');
 
@@ -68,6 +69,9 @@ Route::middleware(['auth'])->group(function (){
     Route::get('/jurnal', [JurnalController::class, 'index'])->name('jurnal.index');
     Route::get('/jurnal/tambah', [JurnalController::class, 'create'])->name('jurnal.create');
     Route::post('/jurnal', [JurnalController::class, 'store'])->name('jurnal.store');
+
+    // === ROUTE BUKU BESAR ===
+    Route::get('/buku-besar', [BukuBesarController::class, 'index'])->name('buku_besar.index');
 
     // Halaman Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
