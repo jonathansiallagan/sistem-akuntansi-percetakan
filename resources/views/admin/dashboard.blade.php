@@ -2,343 +2,359 @@
 
     {{-- HEADER --}}
     <div class="mb-6">
+
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
 
             <div>
+
                 <h1 class="text-2xl font-bold text-gray-800">
                     {{ $judulDashboard }}
                 </h1>
 
                 <p class="text-sm text-gray-500 mt-1">
-                    {{ $subJudul }}
+                    {{ $subjudulDashboard }}
                 </p>
+
             </div>
 
+
             {{-- FILTER --}}
-            <form method="GET" action="{{ route('admin') }}"
-                  class="flex flex-wrap items-center gap-2">
+            <form
+                method="GET"
+                action="{{ route('admin') }}"
+                class="flex flex-col sm:flex-row gap-3"
+            >
 
                 @if($isAdminPusat)
-                    <select name="cabang"
-                            class="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white">
+
+                    <select
+                        name="cabang"
+                        onchange="this.form.submit()"
+                        class="border border-gray-200 rounded-lg px-4 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
 
                         <option value="semua">
                             Semua Cabang
                         </option>
 
                         @foreach($semuaCabang as $cabang)
-                            <option value="{{ $cabang->id }}"
-                                {{ (string) $cabangId === (string) $cabang->id ? 'selected' : '' }}>
+
+                            <option
+                                value="{{ $cabang->id }}"
+                                {{ (string) $cabangId === (string) $cabang->id ? 'selected' : '' }}
+                            >
                                 {{ $cabang->nama }}
                             </option>
+
                         @endforeach
 
                     </select>
+
                 @endif
+
 
                 <input
                     type="date"
                     name="tanggal"
                     value="{{ $tanggal }}"
-                    class="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
+                    onchange="this.form.submit()"
+                    class="border border-gray-200 rounded-lg px-4 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
-
-                <button
-                    type="submit"
-                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium">
-                    Terapkan
-                </button>
 
             </form>
 
         </div>
+
     </div>
 
 
-    {{-- ===================================================== --}}
-    {{-- STATISTIK UTAMA --}}
-    {{-- ===================================================== --}}
+    {{-- STAT CARDS --}}
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-6">
 
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-6">
 
         {{-- OMZET --}}
-        <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+
             <div class="flex items-center justify-between">
 
                 <div>
-                    <p class="text-sm font-medium text-gray-500">
+
+                    <p class="text-sm text-gray-500">
                         Omzet
                     </p>
 
-                    <h2 class="text-2xl font-bold text-gray-800 mt-2">
+                    <h2 class="text-2xl font-bold text-gray-800 mt-1">
                         Rp {{ number_format($omzet, 0, ',', '.') }}
                     </h2>
+
                 </div>
 
-                <div class="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-                    <i class="fa-solid fa-money-bill-wave"></i>
+                <div class="w-11 h-11 rounded-lg bg-blue-50 flex items-center justify-center">
+
+                    <i class="fa-solid fa-money-bill-trend-up text-blue-600"></i>
+
                 </div>
 
             </div>
+
+
+            <div class="mt-3 flex items-center gap-2">
+
+                <span
+                    class="text-xs font-semibold px-2 py-1 rounded-md
+                    {{ $persenOmzet >= 0
+                        ? 'text-green-600 bg-green-50'
+                        : 'text-red-600 bg-red-50' }}"
+                >
+
+                    {{ $persenOmzet >= 0 ? '↑' : '↓' }}
+
+                    {{ number_format(abs($persenOmzet), 1, ',', '.') }}%
+
+                </span>
+
+                <span class="text-xs text-gray-400">
+                    dari hari sebelumnya
+                </span>
+
+            </div>
+
         </div>
 
 
         {{-- TRANSAKSI --}}
-        <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+
             <div class="flex items-center justify-between">
 
                 <div>
-                    <p class="text-sm font-medium text-gray-500">
+
+                    <p class="text-sm text-gray-500">
                         Transaksi
                     </p>
 
-                    <h2 class="text-2xl font-bold text-gray-800 mt-2">
+                    <h2 class="text-2xl font-bold text-gray-800 mt-1">
                         {{ number_format($jumlahTransaksi, 0, ',', '.') }}
                     </h2>
+
                 </div>
 
-                <div class="w-11 h-11 rounded-xl bg-green-50 text-green-600 flex items-center justify-center">
-                    <i class="fa-solid fa-receipt"></i>
+                <div class="w-11 h-11 rounded-lg bg-purple-50 flex items-center justify-center">
+
+                    <i class="fa-solid fa-receipt text-purple-600"></i>
+
                 </div>
 
             </div>
+
+
+            <div class="mt-3 flex items-center gap-2">
+
+                <span
+                    class="text-xs font-semibold px-2 py-1 rounded-md
+                    {{ $persenTransaksi >= 0
+                        ? 'text-green-600 bg-green-50'
+                        : 'text-red-600 bg-red-50' }}"
+                >
+
+                    {{ $persenTransaksi >= 0 ? '↑' : '↓' }}
+
+                    {{ number_format(abs($persenTransaksi), 1, ',', '.') }}%
+
+                </span>
+
+                <span class="text-xs text-gray-400">
+                    dari hari sebelumnya
+                </span>
+
+            </div>
+
         </div>
 
 
         {{-- HPP --}}
-        <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+
             <div class="flex items-center justify-between">
 
                 <div>
-                    <p class="text-sm font-medium text-gray-500">
+
+                    <p class="text-sm text-gray-500">
                         HPP
                     </p>
 
-                    <h2 class="text-2xl font-bold text-gray-800 mt-2">
+                    <h2 class="text-2xl font-bold text-gray-800 mt-1">
                         Rp {{ number_format($totalHpp, 0, ',', '.') }}
                     </h2>
+
                 </div>
 
-                <div class="w-11 h-11 rounded-xl bg-red-50 text-red-600 flex items-center justify-center">
-                    <i class="fa-solid fa-boxes-stacked"></i>
+                <div class="w-11 h-11 rounded-lg bg-orange-50 flex items-center justify-center">
+
+                    <i class="fa-solid fa-boxes-stacked text-orange-600"></i>
+
                 </div>
 
             </div>
+
+
+            <div class="mt-3 flex items-center gap-2">
+
+                <span
+                    class="text-xs font-semibold px-2 py-1 rounded-md
+                    {{ $persenHpp <= 0
+                        ? 'text-green-600 bg-green-50'
+                        : 'text-red-600 bg-red-50' }}"
+                >
+
+                    {{ $persenHpp >= 0 ? '↑' : '↓' }}
+
+                    {{ number_format(abs($persenHpp), 1, ',', '.') }}%
+
+                </span>
+
+                <span class="text-xs text-gray-400">
+                    dari hari sebelumnya
+                </span>
+
+            </div>
+
         </div>
 
 
         {{-- LABA --}}
-        <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+
             <div class="flex items-center justify-between">
 
                 <div>
-                    <p class="text-sm font-medium text-gray-500">
+
+                    <p class="text-sm text-gray-500">
                         Laba Kotor
                     </p>
 
-                    <h2 class="text-2xl font-bold text-gray-800 mt-2">
+                    <h2 class="text-2xl font-bold text-gray-800 mt-1">
                         Rp {{ number_format($laba, 0, ',', '.') }}
                     </h2>
 
-                    <p class="text-xs text-gray-400 mt-1">
-                        Omzet - HPP
-                    </p>
                 </div>
 
-                <div class="w-11 h-11 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
-                    <i class="fa-solid fa-chart-line"></i>
+                <div class="w-11 h-11 rounded-lg bg-green-50 flex items-center justify-center">
+
+                    <i class="fa-solid fa-chart-line text-green-600"></i>
+
                 </div>
 
             </div>
+
+
+            <div class="mt-3 flex items-center gap-2">
+
+                <span
+                    class="text-xs font-semibold px-2 py-1 rounded-md
+                    {{ $persenLaba >= 0
+                        ? 'text-green-600 bg-green-50'
+                        : 'text-red-600 bg-red-50' }}"
+                >
+
+                    {{ $persenLaba >= 0 ? '↑' : '↓' }}
+
+                    {{ number_format(abs($persenLaba), 1, ',', '.') }}%
+
+                </span>
+
+                <span class="text-xs text-gray-400">
+                    dari hari sebelumnya
+                </span>
+
+            </div>
+
         </div>
 
     </div>
 
 
-    {{-- ===================================================== --}}
-    {{-- MASTER DATA --}}
-    {{-- ===================================================== --}}
-
-    @if($isAdminPusat)
-
-        <div class="mb-6">
-
-            <div class="mb-4">
-                <h2 class="text-lg font-bold text-gray-800">
-                    Ringkasan Master Data
-                </h2>
-
-                <p class="text-sm text-gray-500">
-                    Data yang tersedia dalam sistem.
-                </p>
-            </div>
+    {{-- CHART + PRODUK TERLARIS --}}
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-5 mb-6">
 
 
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
-
-                {{-- CABANG --}}
-                <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-                    <div class="flex items-center gap-4">
-
-                        <div class="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
-                            <i class="fa-solid fa-store"></i>
-                        </div>
-
-                        <div>
-                            <p class="text-sm text-gray-500">
-                                Total Cabang
-                            </p>
-
-                            <p class="text-xl font-bold text-gray-800">
-                                {{ number_format($totalCabang, 0, ',', '.') }}
-                            </p>
-                        </div>
-
-                    </div>
-                </div>
-
-
-                {{-- USER --}}
-                <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-                    <div class="flex items-center gap-4">
-
-                        <div class="w-10 h-10 rounded-lg bg-green-50 text-green-600 flex items-center justify-center">
-                            <i class="fa-solid fa-users"></i>
-                        </div>
-
-                        <div>
-                            <p class="text-sm text-gray-500">
-                                Total User
-                            </p>
-
-                            <p class="text-xl font-bold text-gray-800">
-                                {{ number_format($totalUser, 0, ',', '.') }}
-                            </p>
-                        </div>
-
-                    </div>
-                </div>
-
-
-                {{-- PRODUK --}}
-                <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-                    <div class="flex items-center gap-4">
-
-                        <div class="w-10 h-10 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center">
-                            <i class="fa-solid fa-box"></i>
-                        </div>
-
-                        <div>
-                            <p class="text-sm text-gray-500">
-                                Total Produk
-                            </p>
-
-                            <p class="text-xl font-bold text-gray-800">
-                                {{ number_format($totalProduk, 0, ',', '.') }}
-                            </p>
-                        </div>
-
-                    </div>
-                </div>
-
-
-                {{-- AKUN --}}
-                <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-                    <div class="flex items-center gap-4">
-
-                        <div class="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
-                            <i class="fa-solid fa-list"></i>
-                        </div>
-
-                        <div>
-                            <p class="text-sm text-gray-500">
-                                Total Akun
-                            </p>
-
-                            <p class="text-xl font-bold text-gray-800">
-                                {{ number_format($totalAkun, 0, ',', '.') }}
-                            </p>
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-
-    @endif
-
-
-    {{-- ===================================================== --}}
-    {{-- GRAFIK + PRODUK TERLARIS --}}
-    {{-- ===================================================== --}}
-
-    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
-
-        {{-- GRAFIK --}}
-        <div class="xl:col-span-2 bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+        {{-- CHART --}}
+        <div class="xl:col-span-2 bg-white rounded-xl border border-gray-100 shadow-sm p-5">
 
             <div class="mb-5">
-                <h2 class="text-lg font-bold text-gray-800">
-                    Grafik Omzet
+
+                <h2 class="font-semibold text-gray-800">
+                    Performa Omzet
                 </h2>
 
-                <p class="text-sm text-gray-500">
-                    Omzet 7 hari terakhir.
+                <p class="text-xs text-gray-400 mt-1">
+                    Perkembangan omzet 7 hari terakhir
                 </p>
+
             </div>
 
-            <div class="relative h-[300px]">
+            <div class="h-80">
+
                 <canvas id="omzetChart"></canvas>
+
             </div>
 
         </div>
 
 
         {{-- PRODUK TERLARIS --}}
-        <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
 
             <div class="mb-5">
-                <h2 class="text-lg font-bold text-gray-800">
+
+                <h2 class="font-semibold text-gray-800">
                     Produk Terlaris
                 </h2>
 
-                <p class="text-sm text-gray-500">
-                    Berdasarkan jumlah produk terjual.
+                <p class="text-xs text-gray-400 mt-1">
+                    Produk dengan penjualan terbanyak
                 </p>
+
             </div>
 
 
             <div class="space-y-4">
 
-                @forelse($produkTerlaris as $produk)
+                @forelse($produkTerlaris as $index => $produk)
 
-                    <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
 
-                        <div class="flex items-center gap-3 min-w-0">
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-sm font-bold">
 
-                            <div class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                                <i class="fa-solid fa-box"></i>
-                            </div>
-
-                            <div class="min-w-0">
-
-                                <p class="text-sm font-semibold text-gray-800 truncate">
-                                    {{ $produk->produk->nama ?? 'Produk' }}
-                                </p>
-
-                                <p class="text-xs text-gray-400">
-                                    {{ number_format($produk->total_terjual, 0, ',', '.') }} terjual
-                                </p>
-
-                            </div>
+                            {{ $index + 1 }}
 
                         </div>
 
-                        <span class="text-sm font-bold text-gray-700">
-                            {{ number_format($produk->total_terjual, 0, ',', '.') }}
-                        </span>
+
+                        <div class="flex-1 min-w-0">
+
+                            <p class="text-sm font-medium text-gray-800 truncate">
+
+                                {{ $produk->nama_produk }}
+
+                            </p>
+
+                            <p class="text-xs text-gray-400">
+
+                                {{ number_format($produk->total_qty, 0, ',', '.') }}
+                                terjual
+
+                            </p>
+
+                        </div>
+
+
+                        <div class="text-xs font-semibold text-gray-600">
+
+                            Rp
+                            {{ number_format($produk->total_penjualan, 0, ',', '.') }}
+
+                        </div>
 
                     </div>
 
@@ -349,7 +365,7 @@
                         <i class="fa-solid fa-box-open text-3xl text-gray-300 mb-3"></i>
 
                         <p class="text-sm text-gray-400">
-                            Belum ada data produk.
+                            Belum ada data produk
                         </p>
 
                     </div>
@@ -363,20 +379,20 @@
     </div>
 
 
-    {{-- ===================================================== --}}
     {{-- TRANSAKSI TERBARU --}}
-    {{-- ===================================================== --}}
+    <div class="bg-white rounded-xl border border-gray-100 shadow-sm mb-6">
 
-    <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden mb-6">
+        <div class="p-5 border-b border-gray-100">
 
-        <div class="px-6 py-5 border-b border-gray-200">
-
-            <h2 class="text-lg font-bold text-gray-800">
+            <h2 class="font-semibold text-gray-800">
                 Transaksi Terbaru
             </h2>
 
-            <p class="text-sm text-gray-500 mt-1">
-                Transaksi pada tanggal {{ \Carbon\Carbon::parse($tanggal)->format('d/m/Y') }}.
+            <p class="text-xs text-gray-400 mt-1">
+
+                Transaksi pada tanggal
+                {{ \Carbon\Carbon::parse($tanggal)->translatedFormat('d F Y') }}
+
             </p>
 
         </div>
@@ -386,35 +402,35 @@
 
             <table class="w-full text-sm">
 
-                <thead class="bg-gray-50 border-b border-gray-200">
+                <thead class="bg-gray-50 text-gray-500">
 
                     <tr>
 
-                        <th class="text-left px-6 py-4 font-semibold text-gray-600">
-                            Invoice
+                        <th class="text-left px-5 py-3 font-medium">
+                            #
                         </th>
 
-                        <th class="text-left px-6 py-4 font-semibold text-gray-600">
+                        <th class="text-left px-5 py-3 font-medium">
                             Tanggal
                         </th>
 
-                        <th class="text-left px-6 py-4 font-semibold text-gray-600">
-                            Pelanggan
-                        </th>
-
-                        <th class="text-left px-6 py-4 font-semibold text-gray-600">
+                        <th class="text-left px-5 py-3 font-medium">
                             Cabang
                         </th>
 
-                        <th class="text-right px-6 py-4 font-semibold text-gray-600">
+                        <th class="text-left px-5 py-3 font-medium">
+                            User
+                        </th>
+
+                        <th class="text-right px-5 py-3 font-medium">
                             Omzet
                         </th>
 
-                        <th class="text-right px-6 py-4 font-semibold text-gray-600">
+                        <th class="text-right px-5 py-3 font-medium">
                             HPP
                         </th>
 
-                        <th class="text-right px-6 py-4 font-semibold text-gray-600">
+                        <th class="text-right px-5 py-3 font-medium">
                             Laba
                         </th>
 
@@ -425,42 +441,61 @@
 
                 <tbody class="divide-y divide-gray-100">
 
-                    @forelse($transaksiTerbaru as $transaksi)
+                    @forelse($transaksiTerbaru as $index => $transaksi)
 
                         @php
-                            $omzetTransaksi = (float) $transaksi->total_transaksi;
-                            $hppTransaksi = (float) $transaksi->total_hpp;
-                            $labaTransaksi = $omzetTransaksi - $hppTransaksi;
+
+                            $labaTransaksi =
+                                $transaksi->total_transaksi
+                                -
+                                $transaksi->total_hpp;
+
                         @endphp
+
 
                         <tr class="hover:bg-gray-50">
 
-                            <td class="px-6 py-4 font-semibold text-blue-600">
-                                {{ $transaksi->no_invoice ?? '-' }}
+                            <td class="px-5 py-4 text-gray-500">
+                                {{ $index + 1 }}
                             </td>
 
-                            <td class="px-6 py-4 text-gray-600">
+                            <td class="px-5 py-4 text-gray-700">
+
                                 {{ \Carbon\Carbon::parse($transaksi->tanggal)->format('d/m/Y') }}
+
                             </td>
 
-                            <td class="px-6 py-4 text-gray-700">
-                                {{ $transaksi->nama_pelanggan ?? '-' }}
-                            </td>
+                            <td class="px-5 py-4 text-gray-700">
 
-                            <td class="px-6 py-4 text-gray-600">
                                 {{ $transaksi->cabang->nama ?? '-' }}
+
                             </td>
 
-                            <td class="px-6 py-4 text-right font-semibold text-gray-800">
-                                Rp {{ number_format($omzetTransaksi, 0, ',', '.') }}
+                            <td class="px-5 py-4 text-gray-700">
+
+                                {{ $transaksi->user->name ?? '-' }}
+
                             </td>
 
-                            <td class="px-6 py-4 text-right text-red-600">
-                                Rp {{ number_format($hppTransaksi, 0, ',', '.') }}
+                            <td class="px-5 py-4 text-right font-medium text-gray-800">
+
+                                Rp
+                                {{ number_format($transaksi->total_transaksi, 0, ',', '.') }}
+
                             </td>
 
-                            <td class="px-6 py-4 text-right font-semibold text-green-600">
-                                Rp {{ number_format($labaTransaksi, 0, ',', '.') }}
+                            <td class="px-5 py-4 text-right text-gray-600">
+
+                                Rp
+                                {{ number_format($transaksi->total_hpp, 0, ',', '.') }}
+
+                            </td>
+
+                            <td class="px-5 py-4 text-right font-medium text-green-600">
+
+                                Rp
+                                {{ number_format($labaTransaksi, 0, ',', '.') }}
+
                             </td>
 
                         </tr>
@@ -469,12 +504,15 @@
 
                         <tr>
 
-                            <td colspan="7" class="px-6 py-10 text-center">
+                            <td
+                                colspan="7"
+                                class="px-5 py-10 text-center"
+                            >
 
                                 <i class="fa-solid fa-receipt text-3xl text-gray-300 mb-3"></i>
 
                                 <p class="text-sm text-gray-400">
-                                    Belum ada transaksi pada tanggal ini.
+                                    Belum ada transaksi
                                 </p>
 
                             </td>
@@ -492,127 +530,21 @@
     </div>
 
 
-    {{-- ===================================================== --}}
-    {{-- RINGKASAN CABANG --}}
-    {{-- ===================================================== --}}
-
-    @if($isAdminPusat)
-
-        <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden mb-6">
-
-            <div class="px-6 py-5 border-b border-gray-200">
-
-                <h2 class="text-lg font-bold text-gray-800">
-                    Ringkasan Cabang
-                </h2>
-
-                <p class="text-sm text-gray-500 mt-1">
-                    Performa masing-masing cabang.
-                </p>
-
-            </div>
+    {{-- JURNAL --}}
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-5">
 
 
-            <div class="overflow-x-auto">
+        {{-- JURNAL TERBARU --}}
+        <div class="xl:col-span-2 bg-white rounded-xl border border-gray-100 shadow-sm">
 
-                <table class="w-full text-sm">
+            <div class="p-5 border-b border-gray-100">
 
-                    <thead class="bg-gray-50 border-b border-gray-200">
-
-                        <tr>
-
-                            <th class="text-left px-6 py-4 font-semibold text-gray-600">
-                                Cabang
-                            </th>
-
-                            <th class="text-center px-6 py-4 font-semibold text-gray-600">
-                                Transaksi
-                            </th>
-
-                            <th class="text-right px-6 py-4 font-semibold text-gray-600">
-                                Omzet
-                            </th>
-
-                            <th class="text-right px-6 py-4 font-semibold text-gray-600">
-                                HPP
-                            </th>
-
-                            <th class="text-right px-6 py-4 font-semibold text-gray-600">
-                                Laba
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody class="divide-y divide-gray-100">
-
-                        @forelse($ringkasanCabang as $cabang)
-
-                            <tr class="hover:bg-gray-50">
-
-                                <td class="px-6 py-4 font-semibold text-gray-800">
-                                    {{ $cabang->nama }}
-                                </td>
-
-                                <td class="px-6 py-4 text-center text-gray-600">
-                                    {{ number_format($cabang->transaksis_count ?? 0, 0, ',', '.') }}
-                                </td>
-
-                                <td class="px-6 py-4 text-right font-semibold text-gray-800">
-                                    Rp {{ number_format($cabang->pendapatan ?? 0, 0, ',', '.') }}
-                                </td>
-
-                                <td class="px-6 py-4 text-right text-red-600">
-                                    Rp {{ number_format($cabang->hpp ?? 0, 0, ',', '.') }}
-                                </td>
-
-                                <td class="px-6 py-4 text-right font-semibold text-green-600">
-                                    Rp {{ number_format($cabang->laba ?? 0, 0, ',', '.') }}
-                                </td>
-
-                            </tr>
-
-                        @empty
-
-                            <tr>
-
-                                <td colspan="5" class="px-6 py-8 text-center text-gray-400">
-                                    Belum ada data cabang.
-                                </td>
-
-                            </tr>
-
-                        @endforelse
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
-    @endif
-
-
-    {{-- ===================================================== --}}
-    {{-- JURNAL TERBARU --}}
-    {{-- ===================================================== --}}
-
-    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
-
-        <div class="xl:col-span-2 bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-
-            <div class="px-6 py-5 border-b border-gray-200">
-
-                <h2 class="text-lg font-bold text-gray-800">
+                <h2 class="font-semibold text-gray-800">
                     Jurnal Terbaru
                 </h2>
 
-                <p class="text-sm text-gray-500 mt-1">
-                    Data jurnal yang tercatat.
+                <p class="text-xs text-gray-400 mt-1">
+                    Jurnal pada tanggal terpilih
                 </p>
 
             </div>
@@ -622,29 +554,25 @@
 
                 <table class="w-full text-sm">
 
-                    <thead class="bg-gray-50 border-b border-gray-200">
+                    <thead class="bg-gray-50 text-gray-500">
 
                         <tr>
 
-                            <th class="text-left px-6 py-4 font-semibold text-gray-600">
+                            <th class="text-left px-5 py-3 font-medium">
                                 Tanggal
                             </th>
 
-                            <th class="text-left px-6 py-4 font-semibold text-gray-600">
+                            <th class="text-left px-5 py-3 font-medium">
                                 Keterangan
                             </th>
 
-                            <th class="text-left px-6 py-4 font-semibold text-gray-600">
-                                Cabang
-                            </th>
+                            @if($isAdminPusat)
 
-                            <th class="text-right px-6 py-4 font-semibold text-gray-600">
-                                Debit
-                            </th>
+                                <th class="text-left px-5 py-3 font-medium">
+                                    Cabang
+                                </th>
 
-                            <th class="text-right px-6 py-4 font-semibold text-gray-600">
-                                Kredit
-                            </th>
+                            @endif
 
                         </tr>
 
@@ -655,32 +583,29 @@
 
                         @forelse($jurnalTerbaru as $jurnal)
 
-                            @php
-                                $debit = $jurnal->detailJurnals->sum('debit');
-                                $kredit = $jurnal->detailJurnals->sum('kredit');
-                            @endphp
-
                             <tr class="hover:bg-gray-50">
 
-                                <td class="px-6 py-4 text-gray-600">
+                                <td class="px-5 py-4 text-gray-600">
+
                                     {{ \Carbon\Carbon::parse($jurnal->tanggal)->format('d/m/Y') }}
+
                                 </td>
 
-                                <td class="px-6 py-4 text-gray-700">
+                                <td class="px-5 py-4 text-gray-800">
+
                                     {{ $jurnal->keterangan ?? '-' }}
+
                                 </td>
 
-                                <td class="px-6 py-4 text-gray-600">
-                                    {{ $jurnal->cabang->nama ?? '-' }}
-                                </td>
+                                @if($isAdminPusat)
 
-                                <td class="px-6 py-4 text-right text-blue-600 font-medium">
-                                    Rp {{ number_format($debit, 0, ',', '.') }}
-                                </td>
+                                    <td class="px-5 py-4 text-gray-600">
 
-                                <td class="px-6 py-4 text-right text-green-600 font-medium">
-                                    Rp {{ number_format($kredit, 0, ',', '.') }}
-                                </td>
+                                        {{ $jurnal->nama_cabang ?? '-' }}
+
+                                    </td>
+
+                                @endif
 
                             </tr>
 
@@ -688,12 +613,15 @@
 
                             <tr>
 
-                                <td colspan="5" class="px-6 py-10 text-center">
+                                <td
+                                    colspan="{{ $isAdminPusat ? 3 : 2 }}"
+                                    class="px-5 py-10 text-center"
+                                >
 
                                     <i class="fa-solid fa-book-open text-3xl text-gray-300 mb-3"></i>
 
                                     <p class="text-sm text-gray-400">
-                                        Belum ada jurnal.
+                                        Belum ada jurnal
                                     </p>
 
                                 </td>
@@ -711,60 +639,77 @@
         </div>
 
 
-        {{-- RINGKASAN DEBIT KREDIT --}}
-        <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+        {{-- RINGKASAN JURNAL --}}
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm">
 
-            <h2 class="text-lg font-bold text-gray-800">
-                Ringkasan Jurnal
-            </h2>
+            <div class="p-5 border-b border-gray-100">
 
-            <p class="text-sm text-gray-500 mt-1 mb-6">
-                Total debit dan kredit.
-            </p>
+                <h2 class="font-semibold text-gray-800">
+                    Ringkasan Jurnal
+                </h2>
+
+                <p class="text-xs text-gray-400 mt-1">
+                    Total debit dan kredit
+                </p>
+
+            </div>
 
 
-            <div class="space-y-4">
+            <div class="p-5 space-y-4">
+
 
                 {{-- DEBIT --}}
-                <div class="flex items-center justify-between p-4 rounded-xl bg-blue-50">
+                <div class="flex items-center p-4 rounded-lg bg-green-50">
 
-                    <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center mr-3">
 
-                        <div class="w-9 h-9 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
-                            <i class="fa-solid fa-arrow-down"></i>
-                        </div>
-
-                        <span class="text-sm font-medium text-gray-700">
-                            Debit
-                        </span>
+                        <i class="fa-solid fa-arrow-down text-green-600"></i>
 
                     </div>
 
-                    <span class="font-bold text-blue-600">
-                        Rp {{ number_format($totalDebit, 0, ',', '.') }}
-                    </span>
+
+                    <div>
+
+                        <p class="text-xs text-gray-500">
+                            Total Debit
+                        </p>
+
+                        <p class="font-semibold text-gray-800">
+
+                            Rp
+                            {{ number_format($totalDebit, 0, ',', '.') }}
+
+                        </p>
+
+                    </div>
 
                 </div>
 
 
                 {{-- KREDIT --}}
-                <div class="flex items-center justify-between p-4 rounded-xl bg-green-50">
+                <div class="flex items-center p-4 rounded-lg bg-blue-50">
 
-                    <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mr-3">
 
-                        <div class="w-9 h-9 rounded-lg bg-green-100 text-green-600 flex items-center justify-center">
-                            <i class="fa-solid fa-arrow-up"></i>
-                        </div>
-
-                        <span class="text-sm font-medium text-gray-700">
-                            Kredit
-                        </span>
+                        <i class="fa-solid fa-arrow-up text-blue-600"></i>
 
                     </div>
 
-                    <span class="font-bold text-green-600">
-                        Rp {{ number_format($totalKredit, 0, ',', '.') }}
-                    </span>
+
+                    <div>
+
+                        <p class="text-xs text-gray-500">
+                            Total Kredit
+                        </p>
+
+                        <p class="font-semibold text-gray-800">
+
+                            Rp
+                            {{ number_format($totalKredit, 0, ',', '.') }}
+
+                        </p>
+
+                    </div>
 
                 </div>
 
@@ -774,109 +719,149 @@
 
     </div>
 
-</x-admin-layout>
+
+    {{-- CHART JS --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+
+        document.addEventListener(
+            'DOMContentLoaded',
+            function () {
+
+                const canvas =
+                    document.getElementById('omzetChart');
+
+                if (!canvas) {
+                    return;
+                }
+
+                const ctx =
+                    canvas.getContext('2d');
 
 
-{{-- ===================================================== --}}
-{{-- CHART JS --}}
-{{-- ===================================================== --}}
+                new Chart(ctx, {
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                    type: 'line',
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
+                    data: {
 
-    const canvas = document.getElementById('omzetChart');
+                        labels:
+                            @json($tanggalChart),
 
-    if (!canvas) {
-        return;
-    }
+                        datasets: [
 
-    const ctx = canvas.getContext('2d');
+                            {
 
-    const labels = @json($chartLabels);
-    const data = @json($chartData);
+                                label: 'Omzet',
 
-    new Chart(ctx, {
+                                data:
+                                    @json($omzetChart),
 
-        type: 'line',
+                                borderWidth: 3,
 
-        data: {
-            labels: labels,
+                                tension: 0.4,
 
-            datasets: [{
-                label: 'Omzet',
-                data: data,
-                borderWidth: 2,
-                tension: 0.35,
-                fill: true,
-                pointRadius: 4,
-                pointHoverRadius: 6
-            }]
-        },
+                                fill: true,
 
-        options: {
+                                pointRadius: 4,
 
-            responsive: true,
-            maintainAspectRatio: false,
+                                pointHoverRadius: 6
 
-            plugins: {
+                            }
 
-                legend: {
-                    display: false
-                },
+                        ]
 
-                tooltip: {
+                    },
 
-                    callbacks: {
 
-                        label: function (context) {
+                    options: {
 
-                            return 'Rp ' +
-                                new Intl.NumberFormat('id-ID')
-                                .format(context.raw || 0);
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+
+                        plugins: {
+
+                            legend: {
+                                display: false
+                            },
+
+
+                            tooltip: {
+
+                                callbacks: {
+
+                                    label: function (context) {
+
+                                        return 'Rp ' +
+                                            new Intl.NumberFormat(
+                                                'id-ID'
+                                            ).format(
+                                                context.raw
+                                            );
+
+                                    }
+
+                                }
+
+                            }
+
+                        },
+
+
+                        scales: {
+
+                            y: {
+
+                                beginAtZero: true,
+
+                                ticks: {
+
+                                    callback:
+                                        function (value) {
+
+                                            return 'Rp ' +
+                                                new Intl.NumberFormat(
+                                                    'id-ID'
+                                                ).format(
+                                                    value
+                                                );
+
+                                        }
+
+                                },
+
+                                grid: {
+
+                                    color: '#f3f4f6'
+
+                                }
+
+                            },
+
+
+                            x: {
+
+                                grid: {
+
+                                    display: false
+
+                                }
+
+                            }
 
                         }
 
                     }
 
-                }
-
-            },
-
-            scales: {
-
-                y: {
-
-                    beginAtZero: true,
-
-                    ticks: {
-
-                        callback: function (value) {
-
-                            return 'Rp ' +
-                                new Intl.NumberFormat('id-ID')
-                                .format(value);
-
-                        }
-
-                    }
-
-                },
-
-                x: {
-
-                    grid: {
-                        display: false
-                    }
-
-                }
+                });
 
             }
 
-        }
+        );
 
-    });
+    </script>
 
-});
-</script>
+</x-admin-layout>
