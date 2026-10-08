@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Akun;
+use App\Models\Cabang;
+use App\Models\DetailTransaksi;
+use App\Models\Jurnal;
+use App\Models\Produk;
 use App\Models\Transaksi;
+use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -14,133 +19,354 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // =====================
-        // Tentukan role & judul
-        // =====================
-        $isAdminPusat = $user->role === 'Admin Pusat'; // sesuaikan nama kolom role jika berbeda
+        /*
+        |--------------------------------------------------------------------------
+        | ROLE USER
+        |--------------------------------------------------------------------------
+        */
 
-        // Ambil nama cabang dengan aman (hindari muncul object JSON)
-        $namaCabang = 'Cabang Anda';
-        if (!$isAdminPusat) {
-            if (is_object($user->cabang) && isset($user->cabang->nama)) {
-                $namaCabang = $user->cabang->nama;          // relasi model Cabang
-            } elseif (is_string($user->cabang)) {
-                $namaCabang = $user->cabang;                // kolom string
-            } elseif (!empty($user->nama_cabang)) {
-                $namaCabang = $user->nama_cabang;
+        $isAdminPusat = $user->role === 'Admin Pusat';
+
+        /*
+        |--------------------------------------------------------------------------
+        | DAFTAR CABANG
+        |--------------------------------------------------------------------------
+        */
+
+        $semuaCabang = Cabang::orderBy('nama')->get();
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER CABANG
+        |--------------------------------------------------------------------------
+        */
+
+        if ($isAdminPusat) {
+
+            $cabangId = $request->get('cabang');
+
+            if ($cabangId === 'semua' || $cabangId === null || $cabangId === '') {
+                $cabangId = null;
             }
+
+        } else {
+
+            // Admin cabang hanya boleh melihat cabangnya sendiri
+            $cabangId = $user->cabang_id;
         }
 
-        $judulDashboard = $isAdminPusat 
-            ? 'Dashboard Admin Pusat' 
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER TANGGAL
+        |--------------------------------------------------------------------------
+        */
+
+        $tanggal = $request->get(
+            'tanggal',
+            Carbon::today()->format('Y-m-d')
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | INFORMASI CABANG USER
+        |--------------------------------------------------------------------------
+        */
+
+        $namaCabang = 'Seluruh Cabang';
+
+        if (!$isAdminPusat && $user->cabang) {
+            $namaCabang = $user->cabang->nama;
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | JUDUL DASHBOARD
+        |--------------------------------------------------------------------------
+        */
+
+        $judulDashboard = $isAdminPusat
+            ? 'Dashboard Admin Pusat'
             : 'Dashboard Admin Cabang';
 
-        $subJudul = $isAdminPusat 
-            ? 'Ringkasan aktivitas seluruh cabang hari ini.' 
-            : 'Ringkasan aktivitas cabang ' . $namaCabang . ' hari ini.';
 
-        // =====================
-        // FILTER
-        // =====================
-        $cabang  = $request->get('cabang', 'Semua Cabang');
-        $tanggal = $request->get('tanggal', date('Y-m-d'));
+        $subJudul = $isAdminPusat
+            ? 'Ringkasan aktivitas seluruh cabang.'
+            : 'Ringkasan aktivitas ' . $namaCabang . '.';
 
-        // Jika Admin Cabang → paksa hanya cabang miliknya
-        if (!$isAdminPusat) {
-            $cabang = $namaCabang;
+
+        /*
+        |--------------------------------------------------------------------------
+        | QUERY TRANSAKSI
+        |--------------------------------------------------------------------------
+        */
+
+        $transaksiQuery = Transaksi::query()
+            ->whereDate('tanggal', $tanggal);
+
+
+        if ($cabangId !== null) {
+            $transaksiQuery->where('cabang_id', $cabangId);
         }
-        
-        // =====================
-        // DETEKSI KOLOM OTOMATIS
-        // =====================
-        $columns = Schema::getColumnListing('transaksis');
 
-        $possibleMoney = [
-            'nominal', 'total', 'total_harga', 'jumlah', 
-            'harga', 'nilai', 'grand_total', 'subtotal', 'harga_total'
-        ];
-        $kolomUang = collect($possibleMoney)->first(fn($col) => in_array($col, $columns));
-        $possibleCabang = ['cabang', 'nama_cabang', 'branch', 'cabang_id'];
-        $kolomCabang = collect($possibleCabang)->first(fn($col) => in_array($col, $columns)) ?? 'cabang';
 
-        // =====================
-        // QUERY DASAR
-        // =====================
-        $query = Transaksi::query()->whereDate('created_at', $tanggal);
+        /*
+        |--------------------------------------------------------------------------
+        | TRANSAKSI HARI INI / TANGGAL TERPILIH
+        |--------------------------------------------------------------------------
+        */
 
-        if ($cabang && $cabang !== 'Semua Cabang' && $kolomCabang) {
-            $query->where($kolomCabang, $cabang);
-        }
-        // 5 transaksi terbaru
-        $transaksiTerbaru = (clone $query)
-            ->orderBy('created_at', 'desc')
+        $jumlahTransaksi = (clone $transaksiQuery)->count();
+
+        $omzet = (clone $transaksiQuery)->sum('total_transaksi');
+
+        $totalHpp = (clone $transaksiQuery)->sum('total_hpp');
+
+        $laba = $omzet - $totalHpp;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | TRANSAKSI TERBARU
+        |--------------------------------------------------------------------------
+        */
+
+        $transaksiTerbaru = (clone $transaksiQuery)
+            ->with([
+                'cabang',
+                'user',
+                'detailTransaksis.produk'
+            ])
+            ->orderByDesc('tanggal')
+            ->orderByDesc('id')
             ->limit(5)
             ->get();
-        // =====================
-        // STATISTIK
-        // =====================
-        $omzet = 0;
-        $jumlahTransaksi = (clone $query)->count();
 
-        if ($kolomUang) {
-            $omzet = (clone $query)->sum($kolomUang) ?? 0;
+
+        /*
+        |--------------------------------------------------------------------------
+        | TOTAL DATA MASTER
+        |--------------------------------------------------------------------------
+        */
+
+        $totalCabang = $isAdminPusat
+            ? Cabang::count()
+            : 1;
+
+
+        $cabangAktif = $isAdminPusat
+            ? Cabang::where('status', 'aktif')->count()
+            : Cabang::where('id', $user->cabang_id)
+                ->where('status', 'aktif')
+                ->count();
+
+
+        $totalUser = $isAdminPusat
+            ? User::count()
+            : User::where('cabang_id', $user->cabang_id)->count();
+
+
+        $totalProduk = Produk::count();
+
+        $totalAkun = Akun::count();
+
+        $akunAktif = Akun::where('status', 'aktif')->count();
+
+        $totalJurnal = $isAdminPusat
+            ? Jurnal::count()
+            : Jurnal::where('cabang_id', $user->cabang_id)->count();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PRODUK TERLARIS
+        |--------------------------------------------------------------------------
+        */
+
+        $produkTerlarisQuery = DetailTransaksi::query()
+            ->select('produk_id')
+            ->selectRaw('SUM(jumlah) as total_terjual')
+            ->selectRaw('SUM(subtotal) as total_penjualan')
+            ->whereHas('transaksi', function ($query) use ($tanggal, $cabangId) {
+
+                $query->whereDate('tanggal', $tanggal);
+
+                if ($cabangId !== null) {
+                    $query->where('cabang_id', $cabangId);
+                }
+            })
+            ->with('produk')
+            ->groupBy('produk_id')
+            ->orderByDesc('total_terjual')
+            ->limit(5);
+
+
+        $produkTerlaris = $produkTerlarisQuery->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | JURNAL TERBARU
+        |--------------------------------------------------------------------------
+        */
+
+        $jurnalQuery = Jurnal::query();
+
+        if (!$isAdminPusat) {
+            $jurnalQuery->where('cabang_id', $user->cabang_id);
         }
-        $laba = $omzet * 0.33; // sesuaikan rumus laba jika perlu
-        // =====================
-        // DATA CHART (per jam)
-        // =====================
+
+        $jurnalTerbaru = $jurnalQuery
+            ->with([
+                'cabang',
+                'user',
+                'detailJurnals.akun'
+            ])
+            ->orderByDesc('tanggal')
+            ->orderByDesc('id')
+            ->limit(5)
+            ->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | TOTAL DEBIT & KREDIT
+        |--------------------------------------------------------------------------
+        */
+
+        $totalDebit = 0;
+        $totalKredit = 0;
+
+        foreach ($jurnalTerbaru as $jurnal) {
+
+            foreach ($jurnal->detailJurnals as $detail) {
+
+                $totalDebit += (float) $detail->debit;
+
+                $totalKredit += (float) $detail->kredit;
+            }
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DATA GRAFIK 7 HARI TERAKHIR
+        |--------------------------------------------------------------------------
+        */
+
         $chartLabels = [];
-        $chartData   = [];
+        $chartData = [];
 
-        for ($h = 8; $h <= 16; $h++) {
-            $jam = str_pad($h, 2, '0', STR_PAD_LEFT) . ':00';
-            $chartLabels[] = $jam;
+        for ($i = 6; $i >= 0; $i--) {
 
-            $start = Carbon::parse($tanggal)->setTime($h, 0, 0);
-            $end   = Carbon::parse($tanggal)->setTime($h, 59, 59);
+            $hari = Carbon::parse($tanggal)->subDays($i);
 
-            $sum = 0;
-            if ($kolomUang) {
-                $sum = Transaksi::whereBetween('created_at', [$start, $end])
-                    ->when($cabang && $cabang !== 'Semua Cabang', function ($q) use ($cabang, $kolomCabang) {
-                        $q->where($kolomCabang, $cabang);
-                    })
-                    ->sum($kolomUang) ?? 0;
+            $chartLabels[] = $hari->translatedFormat('d M');
+
+
+            $queryGrafik = Transaksi::query()
+                ->whereDate('tanggal', $hari->format('Y-m-d'));
+
+
+            if ($cabangId !== null) {
+                $queryGrafik->where('cabang_id', $cabangId);
             }
 
-            $chartData[] = round($sum / 1000000, 1); // dalam jutaan
+
+            $pendapatanHari = $queryGrafik->sum('total_transaksi');
+
+
+            $chartData[] = (float) $pendapatanHari;
         }
 
-        // =====================
-        // DAFTAR CABANG
-        // =====================
-        if ($isAdminPusat) {
-            $daftarCabang = [
-                'Semua Cabang',
-                'Cabang Sudirman',
-                'Cabang Bukit',
-                'Cabang Pekanbaru',
-                'Cabang Bagansiapiapi',
-            ];
-        } else {
-            $daftarCabang = [$namaCabang];
+
+        /*
+        |--------------------------------------------------------------------------
+        | RINGKASAN CABANG
+        |--------------------------------------------------------------------------
+        */
+
+        $ringkasanCabangQuery = Cabang::query();
+
+        if (!$isAdminPusat) {
+            $ringkasanCabangQuery->where('id', $user->cabang_id);
         }
+
+
+        $ringkasanCabang = $ringkasanCabangQuery
+            ->withCount('transaksis')
+            ->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PENDAPATAN & LABA PER CABANG
+        |--------------------------------------------------------------------------
+        */
+
+        foreach ($ringkasanCabang as $cabang) {
+
+            $queryCabang = Transaksi::query()
+                ->where('cabang_id', $cabang->id)
+                ->whereDate('tanggal', $tanggal);
+
+
+            $cabang->pendapatan = (float) $queryCabang->sum('total_transaksi');
+
+            $cabang->hpp = (float) $queryCabang->sum('total_hpp');
+
+            $cabang->laba = $cabang->pendapatan - $cabang->hpp;
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DATA
+        |--------------------------------------------------------------------------
+        */
 
         return view('admin.dashboard', compact(
-            'transaksiTerbaru',
-            'omzet',
-            'jumlahTransaksi',
-            'laba',
-            'chartLabels',
-            'chartData',
-            'cabang',
-            'tanggal',
-            'daftarCabang',
+
             'judulDashboard',
             'subJudul',
-            'isAdminPusat'
+
+            'isAdminPusat',
+
+            'namaCabang',
+
+            'semuaCabang',
+            'cabangId',
+            'tanggal',
+
+            'totalCabang',
+            'cabangAktif',
+            'totalUser',
+            'totalProduk',
+            'totalAkun',
+            'akunAktif',
+            'totalJurnal',
+
+            'jumlahTransaksi',
+            'omzet',
+            'totalHpp',
+            'laba',
+
+            'transaksiTerbaru',
+            'produkTerlaris',
+            'jurnalTerbaru',
+
+            'totalDebit',
+            'totalKredit',
+
+            'chartLabels',
+            'chartData',
+
+            'ringkasanCabang'
         ));
     }
+
 
     public function kasir()
     {
