@@ -35,6 +35,9 @@ Route::middleware(['auth'])->group(function (){
     Route::get('/register', [AuthController::class, 'register'])->name('register');
     Route::post('/register', [AuthController::class, 'store'])->name('register.store');
 
+    //Route untuk Profil
+    Route::get('/profil', function () {return view('admin.profil.index');})->name('profile');
+
 //====================================================================================================//
     // === ROUTE yang bisa diakses ADMIN PUSAT & ADMIN CABANG ===
     // === ROUTE TRANSAKSI ===
@@ -81,7 +84,5 @@ Route::middleware(['auth'])->group(function (){
         Route::get('/akun/{id}/edit', [AkunController::class, 'edit'])->name('akun.edit');
         Route::put('/akun/{id}', [AkunController::class, 'update'])->name('akun.update');
         Route::delete('/akun/{id}', [AkunController::class, 'destroy'])->name('akun.destroy');
-
-        Route::get('/profil', function () {return view('admin.profil.index');})->name('profile');
     });
 });
