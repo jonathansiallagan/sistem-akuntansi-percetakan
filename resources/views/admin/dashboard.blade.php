@@ -1,16 +1,16 @@
 <x-admin-layout>
 
     {{-- =========================
-        HEADER DASHBOARD
-    ========================== --}}
-    <div class="mb-6">
-        <h1 class="text-3xl font-bold text-gray-800">
-            Dashboard Admin Pusat
-        </h1>
-        <p class="text-gray-500 mt-1">
-            Ringkasan aktivitas seluruh cabang hari ini.
-        </p>
-    </div>
+    HEADER DASHBOARD
+========================== --}}
+<div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-800">
+        {{ $judulDashboard }}
+    </h1>
+    <p class="text-gray-500 mt-1">
+        {{ $subJudul }}
+    </p>
+</div>
 
 
     {{-- =========================
