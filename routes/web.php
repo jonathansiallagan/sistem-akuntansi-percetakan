@@ -10,6 +10,7 @@ use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\JurnalController;
 use App\Http\Controllers\BukuBesarController;
+use App\Http\Controllers\ProfileController;
 
 Route::redirect('/', '/admin');
 
@@ -36,7 +37,7 @@ Route::middleware(['auth'])->group(function (){
     Route::post('/register', [AuthController::class, 'store'])->name('register.store');
 
     //Route untuk Profil
-    Route::get('/profil', function () {return view('admin.profil.index');})->name('profile');
+    Route::get('/profil', [ProfileController::class, 'index'])->name('profile');
 
 //====================================================================================================//
     // === ROUTE yang bisa diakses ADMIN PUSAT & ADMIN CABANG ===
