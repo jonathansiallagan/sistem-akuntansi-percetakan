@@ -85,5 +85,6 @@ Route::middleware(['auth'])->group(function (){
         Route::get('/akun/{id}/edit', [AkunController::class, 'edit'])->name('akun.edit');
         Route::put('/akun/{id}', [AkunController::class, 'update'])->name('akun.update');
         Route::delete('/akun/{id}', [AkunController::class, 'destroy'])->name('akun.destroy');
+        Route::get('/akun/preview-kode', [AkunController::class, 'previewKode'])->name('akun.preview-kode');
     });
 });
